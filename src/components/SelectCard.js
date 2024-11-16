@@ -8,8 +8,10 @@ const HelmetModel = ({ modelName }) => {
   const mountRef = useRef(null);
 
   useEffect(() => {
-    const width = mountRef.current.clientWidth;
-    const height = mountRef.current.clientHeight;
+    const currentMount = mountRef.current;  // Sauvegarde la référence actuelle
+
+    const width = currentMount.clientWidth;
+    const height = currentMount.clientHeight;
 
     const scene = new THREE.Scene();
 
@@ -19,7 +21,7 @@ const HelmetModel = ({ modelName }) => {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setClearColor(0x000000, 0);
-    mountRef.current.appendChild(renderer.domElement);
+    currentMount.appendChild(renderer.domElement);
 
     const rgbeLoader = new RGBELoader();
     rgbeLoader.load('/path/to/your/hdr/environment.hdr', (texture) => {
@@ -80,8 +82,8 @@ const HelmetModel = ({ modelName }) => {
     });
 
     const handleResize = () => {
-      const width = mountRef.current.clientWidth;
-      const height = mountRef.current.clientHeight;
+      const width = currentMount.clientWidth;
+      const height = currentMount.clientHeight;
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
@@ -90,7 +92,7 @@ const HelmetModel = ({ modelName }) => {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      mountRef.current.removeChild(renderer.domElement);
+      currentMount.removeChild(renderer.domElement);  // Utilise la référence sauvegardée
     };
   }, [modelName]);
 
